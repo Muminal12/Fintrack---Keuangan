@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <title>FinTrack — Keuangan Pribadi</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">FINTRACK</div>
+        <h1 id="greeting">Halo 👋</h1>
+      </div>
+      <button class="icon-btn" id="themeBtn" aria-label="Tema">🌙</button>
+    </header>
+
+    <main>
+      <section id="dashboardPage" class="page active">
+        <div class="balance-card">
+          <div class="muted">Total saldo</div>
+          <div class="balance" id="totalBalance">Rp0</div>
+          <div class="balance-row">
+            <span>📈 <b id="incomeTotal">Rp0</b> pemasukan</span>
+            <span>📉 <b id="expenseTotal">Rp0</b> pengeluaran</span>
+          </div>
+        </div>
+
+        <div class="section-head">
+          <h2>Ringkasan</h2><button class="text-btn" data-page="analyticsPage">Lihat semua</button>
+        </div>
+        <div class="stats-grid">
+          <div class="stat"><span>💰</span><small>Pemasukan</small><b id="dashIncome">Rp0</b></div>
+          <div class="stat"><span>🛒</span><small>Pengeluaran</small><b id="dashExpense">Rp0</b></div>
+          <div class="stat"><span>🎯</span><small>Target</small><b id="goalProgress">0%</b></div>
+          <div class="stat"><span>📊</span><small>Budget terpakai</small><b id="budgetProgress">0%</b></div>
+        </div>
+
+        <div class="section-head"><h2>Pengeluaran bulan ini</h2></div>
+        <div class="card">
+          <div class="chart" id="categoryChart"></div>
+          <div id="categoryLegend" class="legend"></div>
+        </div>
+
+        <div class="section-head"><h2>Transaksi terbaru</h2><button class="text-btn" data-page="transactionsPage">Semua</button></div>
+        <div id="recentTransactions" class="transaction-list"></div>
+      </section>
+
+      <section id="transactionsPage" class="page">
+        <div class="page-title"><h2>Transaksi</h2><button class="primary small" id="addBtn">＋ Tambah</button></div>
+        <div class="filters">
+          <input id="searchInput" placeholder="🔎 Cari transaksi...">
+          <select id="typeFilter"><option value="all">Semua</option><option value="income">Pemasukan</option><option value="expense">Pengeluaran</option></select>
+        </div>
+        <div id="allTransactions" class="transaction-list"></div>
+      </section>
+
+      <section id="analyticsPage" class="page">
+        <div class="page-title"><h2>Analitik</h2></div>
+        <div class="stats-grid">
+          <div class="stat"><small>Bulan ini</small><b id="analyticsExpense">Rp0</b><span>Pengeluaran</span></div>
+          <div class="stat"><small>Rata-rata</small><b id="dailyAverage">Rp0</b><span>Per hari</span></div>
+        </div>
+        <div class="section-head"><h2>Pengeluaran per kategori</h2></div>
+        <div id="analyticsCategories" class="category-bars"></div>
+        <div class="section-head"><h2>Insight pintar 💡</h2></div>
+        <div id="insight" class="insight"></div>
+      </section>
+
+      <section id="goalsPage" class="page">
+        <div class="page-title"><h2>Target tabungan</h2><button class="primary small" id="goalBtn">＋ Target</button></div>
+        <div id="goalsList" class="goal-list"></div>
+      </section>
+
+      <section id="settingsPage" class="page">
+        <div class="page-title"><h2>Pengaturan</h2></div>
+        <div class="card settings">
+          <label>Nama pengguna<input id="nameInput" placeholder="Nama kamu"></label>
+          <label>Budget bulanan<input id="budgetInput" type="number" placeholder="5000000"></label>
+          <button class="primary" id="saveSettings">Simpan pengaturan</button>
+          <hr>
+          <button class="secondary" id="exportBtn">⬇ Export JSON</button>
+          <button class="danger" id="resetBtn">Reset semua data</button>
+        </div>
+      </section>
+    </main>
+
+    <button class="fab" id="fab">＋</button>
+
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-page="dashboardPage">⌂<span>Home</span></button>
+      <button class="nav-item" data-page="transactionsPage">↕<span>Transaksi</span></button>
+      <button class="nav-item" data-page="analyticsPage">◔<span>Analitik</span></button>
+      <button class="nav-item" data-page="goalsPage">◎<span>Target</span></button>
+      <button class="nav-item" data-page="settingsPage">⚙<span>Profil</span></button>
+    </nav>
+  </div>
+
+  <div class="modal hidden" id="transactionModal">
+    <div class="modal-box">
+      <div class="modal-head"><h2>Tambah transaksi</h2><button class="close" data-close>×</button></div>
+      <form id="transactionForm">
+        <div class="type-switch"><button type="button" class="selected" data-type="expense">Pengeluaran</button><button type="button" data-type="income">Pemasukan</button></div>
+        <input type="hidden" id="transactionType" value="expense">
+        <label>Nominal<input id="amount" type="number" min="1" required placeholder="0"></label>
+        <label>Kategori<select id="category"></select></label>
+        <label>Tanggal<input id="date" type="date" required></label>
+        <label>Dompet / rekening<select id="wallet"></select></label>
+        <label>Catatan<input id="note" maxlength="80" placeholder="Contoh: makan siang"></label>
+        <button class="primary" type="submit">Simpan transaksi</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="goalModal">
+    <div class="modal-box">
+      <div class="modal-head"><h2>Target baru</h2><button class="close" data-close>×</button></div>
+      <form id="goalForm">
+        <label>Nama target<input id="goalName" required placeholder="Contoh: Dana darurat"></label>
+        <label>Target nominal<input id="goalAmount" type="number" min="1" required></label>
+        <label>Sudah terkumpul<input id="goalSaved" type="number" min="0" value="0"></label>
+        <label>Target tanggal<input id="goalDate" type="date"></label>
+        <button class="primary" type="submit">Simpan target</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
